@@ -1,4 +1,4 @@
-%%Script to roll and document the frequencies of n rolls on 1:r D10s.
+%%Script to roll and document the frequencies of N rolls on 1:R D10s.
 
 clear all
 close all
@@ -11,7 +11,7 @@ Height = zeros(T,10);
 Width = zeros(T,T);
 Sets = zeros(T,10);
 
-
+%Perform the Monte Carlo Simulation
 for j=1:N
     for i=2:T
         R = RollDice(10,i);
@@ -25,10 +25,21 @@ for j=1:N
     end
 end 
 
+%Obtain the cumulative sum of the heights (otherwise we are just reporting the probability of obtaining a certain height of roll rather than obtaining equal to OR BETTER than a certain height)
+H = zeros(20,10);
+for l = 1:20
+    for k = 10:-1:1
+        H(l,11-k) = sum(Height(l,1:k));
+    end
+end
+
 %3D bar graphs
-figure; bar3(Height/N);title('Probability of height or greater');ylabel('Number of dice');xlabel('Height of dice')
+figure; bar3(Height/N);title('Probability of height');ylabel('Number of dice');xlabel('Height of dice')
+figure; bar3(H/N);title('Probability of height or greater');ylabel('Number of dice');xlabel('Height of dice')
 figure; bar3(Width/N);title('Probability of width');ylabel('Number of dice');xlabel('Width of dice')
 figure; bar3(Sets/N);title('Probability of sets');ylabel('Number of dice');xlabel('Number of sets')
 
 %Tables
-array2table(round(Height/N,2),'VariableNames', {'one','two','three','four','five','six','seven','eight','nine','ten'}, 'RowNames', {'1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'})
+array2table(round(H/N,2),'VariableNames', {'one','two','three','four','five','six','seven','eight','nine','ten'}, 'RowNames', {'1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'})
+array2table(round(Width/N,2),'VariableNames', {'one','two','three','four','five','six','seven','eight','nine','ten'}, 'RowNames', {'1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'})
+array2table(round(Sets/N,2),'VariableNames', {'one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty'}, 'RowNames', {'1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'})
